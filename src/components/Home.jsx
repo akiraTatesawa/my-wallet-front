@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { IconContext } from "react-icons";
@@ -11,8 +11,15 @@ import {
   UserTransactions,
 } from "../assets/styles/homeStyles";
 import { Header } from "../assets/styles/shared/sharedStyles";
+import { Transactions } from "./Transactions";
 
 function Home() {
+  const [transactions, setTransactions] = useState([1]);
+
+  useEffect(() => {
+    setTransactions([...transactions]);
+  }, []);
+
   const navigate = useNavigate();
 
   const logoutIconValues = useMemo(
@@ -37,8 +44,8 @@ function Home() {
       </Header>
 
       <main>
-        <UserTransactions>
-          Não há registros de entrada ou saída
+        <UserTransactions userHasTransactions={Boolean(transactions.length)}>
+          <Transactions />
         </UserTransactions>
       </main>
 

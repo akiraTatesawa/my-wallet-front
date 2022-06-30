@@ -5,15 +5,16 @@ export const HomeContainer = styled(Container)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
 
   & main {
-    height: calc(100% - 144px);
+    height: 60%;
     margin-bottom: 13px;
   }
 `;
 
 export const Footer = styled.footer`
-  height: 144px;
+  height: 20%;
   width: 100%;
   display: flex;
   gap: 0.5em;
@@ -39,16 +40,18 @@ export const Footer = styled.footer`
 `;
 
 export const UserTransactions = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: ${(props) =>
+    props.userHasTransactions ? "space-between" : "center"};
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background-color: #ffffff;
   border-radius: 5px;
   color: #868686;
   font-size: 20px;
   font-weight: 400;
   text-align: center;
-  padding: 10px;
+  padding: 12px;
+  overflow: auto;
 `;

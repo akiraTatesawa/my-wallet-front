@@ -74,9 +74,17 @@ export const Input = styled.input`
   &:focus {
     outline: 2px solid #fbd3fc;
   }
+
+  &:disabled {
+    background-color: #d1d1d1;
+    color: #585858;
+  }
 `;
 
 export const SubmitButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 58px;
   background-color: #a328d6;
   border-radius: 5px;
@@ -94,9 +102,16 @@ export const Header = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   font-size: 26px;
   font-weight: 700;
   color: #ffffff;
   margin-bottom: 40px;
+`;
+
+export const Warning = styled.span`
+  margin-bottom: 13px;
+  color: #ff5f32;
+  font-weight: 700;
+  font-size: 15px;
+  text-align: center;
 `;
