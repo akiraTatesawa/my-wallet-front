@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { IconContext } from "react-icons";
@@ -12,12 +12,15 @@ import {
 } from "../assets/styles/homeStyles";
 import { Header } from "../assets/styles/shared/sharedStyles";
 import { Transactions } from "./Transactions";
+import UserContext from "../contexts/UserContext";
 
 function Home() {
   const [transactions, setTransactions] = useState([1]);
+  const { userData } = useContext(UserContext);
 
   useEffect(() => {
     setTransactions([...transactions]);
+    console.log(userData);
   }, []);
 
   const navigate = useNavigate();
