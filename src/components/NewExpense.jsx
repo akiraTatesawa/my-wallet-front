@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ThreeDots } from "react-loader-spinner";
 
 import {
   Container,
@@ -18,6 +19,12 @@ function NewExpense() {
     type: "expense",
     value: "",
   });
+
+  const submitButtonContent = isLoading ? (
+    <ThreeDots color="#FFFFFF" />
+  ) : (
+    "Entrar"
+  );
 
   function handleChange(e) {
     let { value } = e.target;
@@ -69,8 +76,8 @@ function NewExpense() {
 
           <Warning>Preencha os campos corretamente!</Warning>
 
-          <SubmitButton type="submit" title="Salvar saída" disable={isLoading}>
-            Salvar saída
+          <SubmitButton type="submit" title="Salvar saída" disabled={isLoading}>
+            {submitButtonContent}
           </SubmitButton>
         </Form>
       </main>

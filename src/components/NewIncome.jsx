@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { ThreeDots } from "react-loader-spinner";
+
 import {
   Container,
   Form,
@@ -18,6 +20,12 @@ function NewIncome() {
     type: "income",
     value: "",
   });
+
+  const submitButtonContent = isLoading ? (
+    <ThreeDots color="#FFFFFF" />
+  ) : (
+    "Entrar"
+  );
 
   function handleChange(e) {
     let { value } = e.target;
@@ -75,7 +83,7 @@ function NewIncome() {
             title="Salvar entrada"
             disabled={isLoading}
           >
-            Salvar entrada
+            {submitButtonContent}
           </SubmitButton>
         </Form>
       </main>

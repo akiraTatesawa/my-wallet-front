@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
+import axios from "axios";
 
 import {
   Main,
@@ -13,14 +14,19 @@ import {
 } from "../assets/styles/shared/sharedStyles";
 
 function SignUp() {
+  const URL = "http://localhost:5000/sign-up";
   const [isLoading, setIsLoading] = useState(false);
+  const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
+
+  const navigate = useNavigate();
 
   const [userRegistrationData, setUserRegistrationData] = useState({
     name: "",
     email: "",
     password: "",
-    passwordConfirmation: "",
   });
+
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
   const submitButtonContent = isLoading ? (
     <ThreeDots color="#FFFFFF" />
@@ -28,14 +34,23 @@ function SignUp() {
     "Entrar"
   );
 
-  const passwordsDontMatchText = userRegistrationData.password !==
-    userRegistrationData.passwordConfirmation && (
-    <Warning>As senhas devem ser iguais!</Warning>
+  const passwordsDontMatchTextWarning = userRegistrationData.password !==
+    passwordConfirmation && <Warning>As senhas devem ser iguais!</Warning>;
+
+  const userAlreadyRegisteredWarning = isAlreadyRegistered && (
+    <Warning>Este email já está cadastrado!</Warning>
   );
 
   function handleChange(e) {
+    setIsAlreadyRegistered(false);
     const { name } = e.target;
     const { value } = e.target;
+
+    if (name === "passwordConfirmation") {
+      setPasswordConfirmation(value);
+      return;
+    }
+
     setUserRegistrationData({ ...userRegistrationData, [name]: value });
   }
 
@@ -43,18 +58,26 @@ function SignUp() {
     e.preventDefault();
     setIsLoading(true);
 
-    if (
-      userRegistrationData.password !==
-      userRegistrationData.passwordConfirmation
-    ) {
-      console.log("As duas senhas devem ser idênticas!");
-      setUserRegistrationData({
-        ...userRegistrationData,
-        password: "",
-        passwordConfirmation: "",
+    const promise = axios.post(URL, userRegistrationData);
+
+    promise
+      .then(() => {
+        console.log("Cadastrado!");
+        navigate("/");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err.response);
+        setUserRegistrationData({
+          ...userRegistrationData,
+          name: "",
+          email: "",
+          password: "",
+        });
+        setPasswordConfirmation("");
+        setIsLoading(false);
+        setIsAlreadyRegistered(true);
       });
-    }
-    setIsLoading(false);
   }
 
   return (
@@ -99,20 +122,20 @@ function SignUp() {
             placeholder="Confirme a senha"
             required
             title="Confirme a senha"
-            value={userRegistrationData.passwordConfirmation}
+            value={passwordConfirmation}
             disabled={isLoading}
             onChange={(e) => handleChange(e)}
           />
 
-          {passwordsDontMatchText}
+          {userAlreadyRegisteredWarning}
+          {passwordsDontMatchTextWarning}
 
           <SubmitButton
             type="submit"
             title="Entrar"
             disabled={
               isLoading ||
-              userRegistrationData.password !==
-                userRegistrationData.passwordConfirmation
+              userRegistrationData.password !== passwordConfirmation
             }
           >
             {submitButtonContent}
