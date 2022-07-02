@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useContext, useState } from "react";
 
 import { ThreeDots } from "react-loader-spinner";
+import { useNavigate } from "react-router-dom";
 
 import {
   Container,
@@ -12,8 +14,13 @@ import {
 } from "../assets/styles/shared/sharedStyles";
 
 import { realMask } from "../auxiliary-functions/realMask";
+import UserContext from "../contexts/UserContext";
 
 function NewIncome() {
+  const URL = "http://localhost:5000/transactions";
+  const { userData } = useContext(UserContext);
+
+  const [isInvalidInput, setIsInvalidInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [newIncomeData, setNewIncomeData] = useState({
     description: "",
@@ -21,15 +28,24 @@ function NewIncome() {
     value: "",
   });
 
+  const navigate = useNavigate();
+
   const submitButtonContent = isLoading ? (
     <ThreeDots color="#FFFFFF" />
   ) : (
     "Entrar"
   );
 
+  const warningContent = isInvalidInput && (
+    <Warning>Preencha os campos corretamente!</Warning>
+  );
+
   function handleChange(e) {
+    setIsInvalidInput(false);
+
     let { value } = e.target;
     const { name } = e.target;
+
     if (name === "value") {
       value = realMask(value);
     }
@@ -39,8 +55,28 @@ function NewIncome() {
   function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
-    console.log(newIncomeData);
-    setIsLoading(false);
+
+    const { token } = userData;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const promise = axios.post(URL, newIncomeData, config);
+
+    promise
+      .then(() => {
+        navigate("/dashboard");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setNewIncomeData({ ...newIncomeData, description: "", value: "" });
+        setIsInvalidInput(true);
+        setIsLoading(false);
+        console.log(err.response);
+      });
   }
 
   return (
@@ -76,7 +112,7 @@ function NewIncome() {
             onChange={(e) => handleChange(e)}
           />
 
-          <Warning>Preencha os campos corretamente!</Warning>
+          {warningContent}
 
           <SubmitButton
             type="submit"

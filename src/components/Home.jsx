@@ -35,7 +35,7 @@ function Home() {
 
     promise
       .then((res) => {
-        setTransactions([...res.data]);
+        setTransactions([...res.data.reverse()]);
       })
       .catch((err) => {
         console.log(err);
