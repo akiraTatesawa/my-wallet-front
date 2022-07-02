@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
+import "./assets/GlobalStyles/reset.css";
 import GlobalStyle from "./assets/GlobalStyles/GlobalStyles";
+
 import Home from "./components/Home";
 import NewExpense from "./components/NewExpense";
 import NewIncome from "./components/NewIncome";
