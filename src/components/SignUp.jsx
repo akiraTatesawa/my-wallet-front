@@ -16,17 +16,15 @@ import {
 function SignUp() {
   const { REACT_APP_SERVER_URL } = process.env;
   const [isLoading, setIsLoading] = useState(false);
-  const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
-
-  const navigate = useNavigate();
-
+  const [errorMessage, setErrorMessage] = useState("");
   const [userRegistrationData, setUserRegistrationData] = useState({
     name: "",
     email: "",
     password: "",
   });
-
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+
+  const navigate = useNavigate();
 
   const submitButtonContent = isLoading ? (
     <ThreeDots color="#FFFFFF" />
@@ -37,12 +35,34 @@ function SignUp() {
   const passwordsDontMatchTextWarning = userRegistrationData.password !==
     passwordConfirmation && <Warning>As senhas devem ser iguais!</Warning>;
 
-  const userAlreadyRegisteredWarning = isAlreadyRegistered && (
-    <Warning>Este email já está cadastrado!</Warning>
+  const errorWarning = errorMessage.length > 0 && (
+    <Warning>{errorMessage}</Warning>
   );
 
+  function handleError(err) {
+    const { status, statusText } = err.response;
+    console.log(statusText);
+
+    if (status === 422) {
+      setErrorMessage("Preencha os campos corretamente!");
+    }
+
+    if (status === 409) {
+      setErrorMessage("Já existe um usuário com este email!");
+    }
+
+    setUserRegistrationData({
+      ...userRegistrationData,
+      name: "",
+      email: "",
+      password: "",
+    });
+    setPasswordConfirmation("");
+    setIsLoading(false);
+  }
+
   function handleChange(e) {
-    setIsAlreadyRegistered(false);
+    setErrorMessage("");
     const { name } = e.target;
     const { value } = e.target;
 
@@ -69,18 +89,7 @@ function SignUp() {
         navigate("/");
         setIsLoading(false);
       })
-      .catch((err) => {
-        console.log(err.response);
-        setUserRegistrationData({
-          ...userRegistrationData,
-          name: "",
-          email: "",
-          password: "",
-        });
-        setPasswordConfirmation("");
-        setIsLoading(false);
-        setIsAlreadyRegistered(true);
-      });
+      .catch(handleError);
   }
 
   return (
@@ -130,7 +139,7 @@ function SignUp() {
             onChange={(e) => handleChange(e)}
           />
 
-          {userAlreadyRegisteredWarning}
+          {errorWarning}
           {passwordsDontMatchTextWarning}
 
           <SubmitButton

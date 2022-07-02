@@ -39,6 +39,20 @@ function NewExpense() {
     <Warning>Preencha os campos corretamente!</Warning>
   );
 
+  function handleError(err) {
+    const { status, statusText } = err.response;
+    console.log(statusText);
+
+    if (status === 401) {
+      localStorage.removeItem("userData");
+      navigate("/");
+    }
+
+    setNewExpenseData({ ...newExpenseData, description: "", value: "" });
+    setIsInvalidInput(true);
+    setIsLoading(false);
+  }
+
   function handleChange(e) {
     setIsInvalidInput(false);
     let { value } = e.target;
@@ -72,12 +86,7 @@ function NewExpense() {
         navigate("/dashboard");
         setIsLoading(false);
       })
-      .catch((err) => {
-        setNewExpenseData({ ...newExpenseData, description: "", value: "" });
-        setIsInvalidInput(true);
-        setIsLoading(false);
-        console.log(err.response);
-      });
+      .catch(handleError);
   }
 
   return (
@@ -104,6 +113,7 @@ function NewExpense() {
           <Input
             type="text"
             name="description"
+            value={newExpenseData.description}
             placeholder="Descrição"
             maxLength={20}
             required

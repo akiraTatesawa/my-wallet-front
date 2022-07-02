@@ -40,7 +40,9 @@ function Home() {
         setTransactions([...res.data.reverse()]);
       })
       .catch((err) => {
-        console.log(err.response);
+        console.log(err.response.statusText);
+        localStorage.removeItem("userData");
+        navigate("/");
       });
   }, []);
 
@@ -69,7 +71,9 @@ function Home() {
           navigate("/");
         })
         .catch((err) => {
-          console.log(err);
+          localStorage.removeItem("userData");
+          console.log(err.response.statusText);
+          navigate("/");
         });
     }
   }

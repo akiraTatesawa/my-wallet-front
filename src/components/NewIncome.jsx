@@ -40,6 +40,20 @@ function NewIncome() {
     <Warning>Preencha os campos corretamente!</Warning>
   );
 
+  function handleError(err) {
+    const { status, statusText } = err.response;
+    console.log(statusText);
+
+    if (status === 401) {
+      localStorage.removeItem("userData");
+      navigate("/");
+    }
+
+    setNewIncomeData({ ...newIncomeData, description: "", value: "" });
+    setIsInvalidInput(true);
+    setIsLoading(false);
+  }
+
   function handleChange(e) {
     setIsInvalidInput(false);
 
@@ -75,12 +89,7 @@ function NewIncome() {
         navigate("/dashboard");
         setIsLoading(false);
       })
-      .catch((err) => {
-        setNewIncomeData({ ...newIncomeData, description: "", value: "" });
-        setIsInvalidInput(true);
-        setIsLoading(false);
-        console.log(err.response);
-      });
+      .catch(handleError);
   }
 
   return (
