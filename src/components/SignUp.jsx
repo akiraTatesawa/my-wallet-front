@@ -14,7 +14,7 @@ import {
 } from "../assets/styles/shared/sharedStyles";
 
 function SignUp() {
-  const URL = "http://localhost:5000/sign-up";
+  const { REACT_APP_SERVER_URL } = process.env;
   const [isLoading, setIsLoading] = useState(false);
   const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
 
@@ -58,7 +58,10 @@ function SignUp() {
     e.preventDefault();
     setIsLoading(true);
 
-    const promise = axios.post(URL, userRegistrationData);
+    const promise = axios.post(
+      `${REACT_APP_SERVER_URL}/sign-up`,
+      userRegistrationData
+    );
 
     promise
       .then(() => {

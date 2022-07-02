@@ -16,7 +16,7 @@ import {
 import UserContext from "../contexts/UserContext";
 
 function SignIn() {
-  const URL = "http://localhost:5000/sign-in";
+  const { REACT_APP_SERVER_URL } = process.env;
   const [isLoading, setIsLoading] = useState(false);
   const [userLoginData, setUserLoginData] = useState({
     email: "",
@@ -76,7 +76,10 @@ function SignIn() {
     e.preventDefault();
     setIsLoading(true);
 
-    const promise = axios.post(URL, userLoginData);
+    const promise = axios.post(
+      `${REACT_APP_SERVER_URL}/sign-in`,
+      userLoginData
+    );
 
     promise.then(handleSuccess).catch(handleError);
   }

@@ -16,7 +16,7 @@ import { realMask } from "../auxiliary-functions/realMask";
 import UserContext from "../contexts/UserContext";
 
 function NewExpense() {
-  const URL = "http://localhost:5000/transactions";
+  const { REACT_APP_SERVER_URL } = process.env;
   const { userData } = useContext(UserContext);
 
   const [isInvalidInput, setIsInvalidInput] = useState(false);
@@ -61,7 +61,11 @@ function NewExpense() {
       },
     };
 
-    const promise = axios.post(URL, newExpenseData, config);
+    const promise = axios.post(
+      `${REACT_APP_SERVER_URL}/transactions`,
+      newExpenseData,
+      config
+    );
 
     promise
       .then(() => {

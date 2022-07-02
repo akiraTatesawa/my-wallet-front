@@ -28,6 +28,9 @@ function App() {
     if (userData.token.length !== 0 && location.pathname === "/") {
       navigate("/dashboard");
     }
+    if (userData.token.length === 0 && location.pathname !== "/sign-up") {
+      navigate("/");
+    }
   }, []);
 
   return (

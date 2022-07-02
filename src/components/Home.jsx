@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { IconContext } from "react-icons";
 import { MdLogout } from "react-icons/md";
@@ -16,7 +16,7 @@ import { Transactions } from "./Transactions";
 import UserContext from "../contexts/UserContext";
 
 function Home() {
-  const URL = "http://localhost:5000/transactions";
+  const { REACT_APP_SERVER_URL } = process.env;
   const { userData } = useContext(UserContext);
   const [transactions, setTransactions] = useState(null);
 
@@ -31,15 +31,14 @@ function Home() {
       },
     };
 
-    const promise = axios.get(URL, config);
+    const promise = axios.get(`${REACT_APP_SERVER_URL}/transactions`, config);
 
     promise
       .then((res) => {
         setTransactions([...res.data.reverse()]);
       })
       .catch((err) => {
-        console.log(err);
-        navigate("/");
+        console.log(err.response);
       });
   }, []);
 
@@ -50,7 +49,30 @@ function Home() {
     return <Transactions transactionsList={transactions} />;
   }
 
-  const logoutIconValues = useMemo(
+  function handleSignOut() {
+    if (window.confirm("Deseja mesmo sair?")) {
+      const { token } = userData;
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const promise = axios.delete(`${REACT_APP_SERVER_URL}/sign-out`, config);
+
+      promise
+        .then(() => {
+          localStorage.removeItem("userData");
+          navigate("/");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }
+
+  const signOutIconValues = useMemo(
     () => ({ color: "#ffffff", size: "1.2em" }),
     []
   );
@@ -66,11 +88,9 @@ function Home() {
     <HomeContainer>
       <Header>
         Olá, {userData.name}
-        <Link to="/" title="Logout">
-          <IconContext.Provider value={logoutIconValues}>
-            <MdLogout />
-          </IconContext.Provider>
-        </Link>
+        <IconContext.Provider value={signOutIconValues}>
+          <MdLogout title="Sign out" onClick={() => handleSignOut()} />
+        </IconContext.Provider>
       </Header>
 
       <main>
