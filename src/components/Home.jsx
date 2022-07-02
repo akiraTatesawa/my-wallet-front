@@ -5,6 +5,7 @@ import { IconContext } from "react-icons";
 import { MdLogout } from "react-icons/md";
 import { BsPlusCircle, BsDashCircle } from "react-icons/bs";
 
+import axios from "axios";
 import {
   Footer,
   HomeContainer,
@@ -15,15 +16,39 @@ import { Transactions } from "./Transactions";
 import UserContext from "../contexts/UserContext";
 
 function Home() {
-  const [transactions, setTransactions] = useState([1]);
+  const URL = "http://localhost:5000/transactions";
   const { userData } = useContext(UserContext);
-
-  useEffect(() => {
-    setTransactions([...transactions]);
-    console.log(userData);
-  }, []);
+  const [transactions, setTransactions] = useState(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const { token } = userData;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const promise = axios.get(URL, config);
+
+    promise
+      .then((res) => {
+        setTransactions([...res.data]);
+      })
+      .catch((err) => {
+        console.log(err);
+        navigate("/");
+      });
+  }, []);
+
+  function renderTransactions() {
+    if (!transactions?.length) {
+      return "Não há registros de entrada ou saída";
+    }
+    return <Transactions transactionsList={transactions} />;
+  }
 
   const logoutIconValues = useMemo(
     () => ({ color: "#ffffff", size: "1.2em" }),
@@ -35,10 +60,12 @@ function Home() {
     []
   );
 
+  const userTransactionsContent = renderTransactions();
+
   return (
     <HomeContainer>
       <Header>
-        Olá, Fulano
+        Olá, {userData.name}
         <Link to="/" title="Logout">
           <IconContext.Provider value={logoutIconValues}>
             <MdLogout />
@@ -47,8 +74,8 @@ function Home() {
       </Header>
 
       <main>
-        <UserTransactions userHasTransactions={Boolean(transactions.length)}>
-          <Transactions />
+        <UserTransactions userHasTransactions={Boolean(transactions?.length)}>
+          {userTransactionsContent}
         </UserTransactions>
       </main>
 

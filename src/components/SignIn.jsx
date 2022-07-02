@@ -40,7 +40,7 @@ function SignIn() {
 
   function handleSuccess(res) {
     localStorage.setItem("userData", JSON.stringify(res.data));
-    setUserData({ ...res.data });
+    setUserData(res.data);
 
     setIsLoading(false);
     navigate("/dashboard");

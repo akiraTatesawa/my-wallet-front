@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Balance,
   Date,
@@ -9,41 +9,72 @@ import {
   Value,
 } from "../assets/styles/transactionsStyles";
 
-function Transaction() {
+function Transaction({ description, type, value, date }) {
   return (
     <SingleTransactionContainer>
       <Description>
-        <Date>30/11</Date>Almoço com a mãe
+        <Date>{date}</Date>
+        {description}
       </Description>
-      <Value type="expense">39,90</Value>
+      <Value type={type}>{value}</Value>
     </SingleTransactionContainer>
   );
 }
 
-export function Transactions() {
+export function Transactions({ transactionsList }) {
+  const [balance, setBalance] = useState({ value: "", isNegative: false });
+
+  function renderTransactionsList() {
+    return transactionsList.map(({ id, description, type, value, date }) => (
+      <Transaction
+        id={id}
+        key={id}
+        description={description}
+        type={type}
+        value={value}
+        date={date}
+      />
+    ));
+  }
+
+  function calcBalance() {
+    let auxBalance = 0;
+
+    transactionsList.map(({ value, type }) => {
+      let valueNum = parseFloat(value.replace(",", "."));
+
+      if (type === "expense") {
+        valueNum *= -1;
+      }
+
+      auxBalance += valueNum;
+
+      return valueNum;
+    });
+
+    const isNegative = auxBalance < 0;
+
+    setBalance({
+      ...balance,
+      value: auxBalance.toFixed(2).replace(".", ",").replace("-", ""),
+      isNegative,
+    });
+  }
+
+  const transactionsContainerContent = renderTransactionsList();
+
+  useEffect(() => {
+    calcBalance();
+  }, []);
+
   return (
     <>
       <TransactionsContainer>
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
-        <Transaction />
+        {transactionsContainerContent}
       </TransactionsContainer>
       <Balance>
         <span>SALDO</span>
-        <Total>28495,00</Total>
+        <Total isNegative={balance.isNegative}>{balance.value}</Total>
       </Balance>
     </>
   );

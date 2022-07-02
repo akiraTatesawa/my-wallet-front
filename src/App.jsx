@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 import GlobalStyle from "./assets/GlobalStyles/GlobalStyles";
 import Home from "./components/Home";
@@ -11,6 +11,7 @@ import UserContext from "./contexts/UserContext";
 
 function App() {
   function searchUserDataLocalStorage() {
+    console.log("App renderizado");
     const userDataLocal = JSON.parse(localStorage.getItem("userData"));
     if (userDataLocal) {
       return userDataLocal;
@@ -18,13 +19,22 @@ function App() {
     return { name: "", token: "", userId: "" };
   }
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [userData, setUserData] = useState(searchUserDataLocalStorage);
-  const userContextValue = useMemo(() => ({ userData, setUserData }));
+
+  useEffect(() => {
+    if (userData.token.length !== 0 && location.pathname === "/") {
+      navigate("/dashboard");
+    }
+  }, []);
 
   return (
-    <BrowserRouter>
+    <>
       <GlobalStyle />
-      <UserContext.Provider value={userContextValue}>
+      {/* eslint-disable-next-line react/jsx-no-constructed-context-values */}
+      <UserContext.Provider value={{ userData, setUserData }}>
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
@@ -33,7 +43,7 @@ function App() {
           <Route path="/new-expense" element={<NewExpense />} />
         </Routes>
       </UserContext.Provider>
-    </BrowserRouter>
+    </>
   );
 }
 
