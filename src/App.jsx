@@ -11,7 +11,6 @@ import UserContext from "./contexts/UserContext";
 
 function App() {
   function searchUserDataLocalStorage() {
-    console.log("App renderizado");
     const userDataLocal = JSON.parse(localStorage.getItem("userData"));
     if (userDataLocal) {
       return userDataLocal;

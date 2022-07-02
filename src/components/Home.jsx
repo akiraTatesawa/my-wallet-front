@@ -12,7 +12,9 @@ import {
   UserTransactions,
 } from "../assets/styles/homeStyles";
 import { Header } from "../assets/styles/shared/sharedStyles";
+
 import { Transactions } from "./Transactions";
+
 import UserContext from "../contexts/UserContext";
 
 function Home() {
