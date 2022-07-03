@@ -33,7 +33,7 @@ function NewIncome() {
   const submitButtonContent = isLoading ? (
     <ThreeDots color="#FFFFFF" />
   ) : (
-    "Entrar"
+    "Salvar entrada"
   );
 
   const warningContent = isInvalidInput && (
@@ -45,6 +45,7 @@ function NewIncome() {
     console.log(statusText);
 
     if (status === 401) {
+      alert("Sua sessão expirou!\nFaça login novamente");
       localStorage.removeItem("userData");
       navigate("/");
     }

@@ -26,6 +26,7 @@ function Transaction({
   renderTransactions,
 }) {
   const { userData } = useContext(UserContext);
+  const [isDeletingTransaction, setIsDeletingTransaction] = useState(false);
   const deleteIconValues = useMemo(
     () => ({ color: "#C6C6C6", size: "1em" }),
     []
@@ -33,8 +34,21 @@ function Transaction({
 
   const navigate = useNavigate();
 
+  function handleError(err) {
+    if (err.response.status === 401) {
+      alert("Sua sessão expirou\nFaça login novamente");
+      localStorage.removeItem("userData");
+      navigate("/");
+    } else {
+      alert("Houve um erro no processo\nTente novamente");
+      renderTransactions();
+    }
+  }
+
   function deleteTransaction() {
     if (window.confirm("Deseja deletar este registro?")) {
+      setIsDeletingTransaction(true);
+
       const { REACT_APP_SERVER_URL } = process.env;
       const { token } = userData;
 
@@ -49,15 +63,7 @@ function Transaction({
         config
       );
 
-      promise
-        .then(() => {
-          renderTransactions();
-        })
-        .catch(() => {
-          alert("Houve um erro no processo.\nFaça login novamente.");
-          localStorage.removeItem("userData");
-          navigate("/");
-        });
+      promise.then(renderTransactions).catch(handleError);
     }
   }
 
@@ -73,6 +79,7 @@ function Transaction({
           type="button"
           title="Deletar registro"
           onClick={() => deleteTransaction()}
+          disabled={isDeletingTransaction}
         >
           <IconContext.Provider value={deleteIconValues}>
             <BsX />

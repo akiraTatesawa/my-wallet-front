@@ -39,8 +39,7 @@ function Home() {
       .then((res) => {
         setTransactions([...res.data.reverse()]);
       })
-      .catch((err) => {
-        console.log(err.response.statusText);
+      .catch(() => {
         localStorage.removeItem("userData");
         navigate("/");
       });

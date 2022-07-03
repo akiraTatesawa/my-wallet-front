@@ -32,7 +32,7 @@ function NewExpense() {
   const submitButtonContent = isLoading ? (
     <ThreeDots color="#FFFFFF" />
   ) : (
-    "Entrar"
+    "Salvar saída"
   );
 
   const warningContent = isInvalidInput && (
@@ -44,6 +44,7 @@ function NewExpense() {
     console.log(statusText);
 
     if (status === 401) {
+      alert("Sua sessão expirou!\nFaça login novamente");
       localStorage.removeItem("userData");
       navigate("/");
     }
