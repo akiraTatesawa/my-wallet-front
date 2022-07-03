@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+
+import { IconContext } from "react-icons";
+import { BsX } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
+
 import {
   Balance,
   Date,
@@ -9,19 +15,75 @@ import {
   Value,
 } from "../assets/styles/transactionsStyles";
 
-function Transaction({ description, type, value, date }) {
+import UserContext from "../contexts/UserContext";
+
+function Transaction({
+  description,
+  type,
+  value,
+  date,
+  id,
+  renderTransactions,
+}) {
+  const { userData } = useContext(UserContext);
+  const deleteIconValues = useMemo(
+    () => ({ color: "#C6C6C6", size: "1em" }),
+    []
+  );
+
+  const navigate = useNavigate();
+
+  function deleteTransaction() {
+    if (window.confirm("Deseja deletar este registro?")) {
+      const { REACT_APP_SERVER_URL } = process.env;
+      const { token } = userData;
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const promise = axios.delete(
+        `${REACT_APP_SERVER_URL}/transactions/${id}`,
+        config
+      );
+
+      promise
+        .then(() => {
+          renderTransactions();
+        })
+        .catch(() => {
+          alert("Houve um erro no processo.\nFaça login novamente.");
+          localStorage.removeItem("userData");
+          navigate("/");
+        });
+    }
+  }
+
   return (
     <SingleTransactionContainer>
       <Description>
         <Date>{date}</Date>
         {description}
       </Description>
-      <Value type={type}>{value}</Value>
+      <Value type={type}>
+        {value}
+        <button
+          type="button"
+          title="Deletar registro"
+          onClick={() => deleteTransaction()}
+        >
+          <IconContext.Provider value={deleteIconValues}>
+            <BsX />
+          </IconContext.Provider>
+        </button>
+      </Value>
     </SingleTransactionContainer>
   );
 }
 
-export function Transactions({ transactionsList }) {
+export function Transactions({ transactionsList, renderTransactions }) {
   const [balance, setBalance] = useState({ value: "", isNegative: false });
 
   function renderTransactionsList() {
@@ -33,6 +95,7 @@ export function Transactions({ transactionsList }) {
         type={type}
         value={value}
         date={date}
+        renderTransactions={renderTransactions}
       />
     ));
   }

@@ -99,7 +99,7 @@ function NewExpense() {
             name="value"
             value={newExpenseData.value}
             placeholder="Valor"
-            maxLength={10}
+            maxLength={9}
             required
             title="Valor"
             disabled={isLoading}
@@ -115,7 +115,7 @@ function NewExpense() {
             name="description"
             value={newExpenseData.description}
             placeholder="Descrição"
-            maxLength={20}
+            maxLength={15}
             required
             title="Descrição"
             disabled={isLoading}

@@ -118,7 +118,7 @@ function NewIncome() {
             name="description"
             value={newIncomeData.description}
             placeholder="Descrição"
-            maxLength={20}
+            maxLength={15}
             required
             title="Descrição"
             disabled={isLoading}

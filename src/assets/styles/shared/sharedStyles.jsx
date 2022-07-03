@@ -100,12 +100,21 @@ export const SubmitButton = styled.button`
 
 export const Header = styled.header`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   font-size: 26px;
+  height: 1em;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 40px;
+  margin-bottom: ${(props) => (props.page === "home" ? "22px" : "40px")};
+
+  & button {
+    padding: 0;
+    height: 100%;
+    font-size: 1em;
+    border: none;
+    background-color: #8c11be;
+  }
 `;
 
 export const Warning = styled.span`

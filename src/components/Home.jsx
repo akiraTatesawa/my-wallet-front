@@ -24,7 +24,7 @@ function Home() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  function getUserTransactions() {
     const { token } = userData;
 
     const config = {
@@ -44,13 +44,20 @@ function Home() {
         localStorage.removeItem("userData");
         navigate("/");
       });
-  }, []);
+  }
+
+  useEffect(() => getUserTransactions(), []);
 
   function renderTransactions() {
     if (!transactions?.length) {
       return "Não há registros de entrada ou saída";
     }
-    return <Transactions transactionsList={transactions} />;
+    return (
+      <Transactions
+        transactionsList={transactions}
+        renderTransactions={() => getUserTransactions()}
+      />
+    );
   }
 
   function handleSignOut() {
@@ -79,7 +86,7 @@ function Home() {
   }
 
   const signOutIconValues = useMemo(
-    () => ({ color: "#ffffff", size: "1.2em" }),
+    () => ({ color: "#ffffff", size: "1em" }),
     []
   );
 
@@ -92,11 +99,13 @@ function Home() {
 
   return (
     <HomeContainer>
-      <Header>
+      <Header page="home">
         Olá, {userData.name}
-        <IconContext.Provider value={signOutIconValues}>
-          <MdLogout title="Sign out" onClick={() => handleSignOut()} />
-        </IconContext.Provider>
+        <button type="button" title="Sair" onClick={() => handleSignOut()}>
+          <IconContext.Provider value={signOutIconValues}>
+            <MdLogout />
+          </IconContext.Provider>
+        </button>
       </Header>
 
       <main>
