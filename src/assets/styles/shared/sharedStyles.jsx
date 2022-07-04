@@ -104,9 +104,18 @@ export const Header = styled.header`
   justify-content: space-between;
   font-size: 26px;
   height: 1em;
+  width: 100%;
   font-weight: 700;
   color: #ffffff;
   margin-bottom: ${(props) => (props.page === "home" ? "22px" : "40px")};
+
+  & span {
+    max-width: 100%;
+    height: 1em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
   & button {
     padding: 0;
@@ -114,6 +123,7 @@ export const Header = styled.header`
     font-size: 1em;
     border: none;
     background-color: #8c11be;
+    margin-left: 1em;
   }
 `;
 

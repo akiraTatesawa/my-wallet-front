@@ -29,7 +29,7 @@ function SignUp() {
   const submitButtonContent = isLoading ? (
     <ThreeDots color="#FFFFFF" />
   ) : (
-    "Entrar"
+    "Cadastrar"
   );
 
   const passwordsDontMatchTextWarning = userRegistrationData.password !==
@@ -103,6 +103,7 @@ function SignUp() {
             name="name"
             placeholder="Nome"
             required
+            maxLength={15}
             title="Nome"
             value={userRegistrationData.name}
             disabled={isLoading}
@@ -144,7 +145,7 @@ function SignUp() {
 
           <SubmitButton
             type="submit"
-            title="Entrar"
+            title="Cadastrar"
             disabled={
               isLoading ||
               userRegistrationData.password !== passwordConfirmation

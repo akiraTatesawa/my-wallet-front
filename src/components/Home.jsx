@@ -99,7 +99,8 @@ function Home() {
   return (
     <HomeContainer>
       <Header page="home">
-        Olá, {userData.name}
+        <span>Olá, {userData.name}</span>
+
         <button type="button" title="Sair" onClick={() => handleSignOut()}>
           <IconContext.Provider value={signOutIconValues}>
             <MdLogout />
