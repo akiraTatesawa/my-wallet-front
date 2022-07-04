@@ -25,7 +25,10 @@ function App() {
   const [userData, setUserData] = useState(searchUserDataLocalStorage);
 
   useEffect(() => {
-    if (userData.token.length !== 0 && location.pathname === "/") {
+    if (
+      userData.token.length !== 0 &&
+      (location.pathname === "/" || location.pathname === "/sign-up")
+    ) {
       navigate("/dashboard");
     }
     if (userData.token.length === 0 && location.pathname !== "/sign-up") {

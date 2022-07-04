@@ -135,7 +135,7 @@ export function Transactions({ transactionsList, renderTransactions }) {
 
   useEffect(() => {
     calcBalance();
-  }, []);
+  }, [transactionsList]);
 
   return (
     <>
